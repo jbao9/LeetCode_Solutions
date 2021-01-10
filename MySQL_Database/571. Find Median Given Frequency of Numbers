@@ -1,0 +1,39 @@
+Problem:
+
+The Numbers table keeps the value of number and its frequency.
+
++----------+-------------+
+|  Number  |  Frequency  |
++----------+-------------|
+|  0       |  7          |
+|  1       |  1          |
+|  2       |  3          |
+|  3       |  1          |
++----------+-------------+
+In this table, the numbers are 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, so the median is (0 + 0) / 2 = 0.
+
++--------+
+| median |
++--------|
+| 0.0000 |
++--------+
+Write a query to find the median of all numbers and name the result as median.
+
+
+Solution:
+
+1. We get the accumulative sum of frequency for each number in both ascendent and descdent order first.
+2. The key to get the median is to find out the number or two numbers whoes accumulative sum of frequency is(are) greater or equal to total SUM(Frequency)/2.
+
+
+SELECT AVG(Number) AS median
+FROM
+   (
+    SELECT *,
+           SUM(Frequency) OVER(ORDER BY Number) AS cum_sum_asc,
+           SUM(Frequency) OVER(ORDER BY Number DESC) AS cum_sum_des,
+           SUM(Frequency) OVER () AS total_ct
+      FROM Numbers
+        ) temp
+WHERE cum_sum_asc >= total_ct / 2
+      AND cum_sum_des >=total_ct/2
