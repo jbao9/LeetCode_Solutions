@@ -1,0 +1,95 @@
+Problem:
+
+618. Students Report By Geography
+
+A U.S graduate school has students from Asia, Europe and America. The students' location information are stored in table student as below.
+ 
+
+| name   | continent |
+|--------|-----------|
+| Jack   | America   |
+| Pascal | Europe    |
+| Xi     | Asia      |
+| Jane   | America   |
+ 
+
+Pivot the continent column in this table so that each name is sorted alphabetically and displayed underneath its corresponding continent. The output headers should be America, Asia and Europe respectively. It is guaranteed that the student number from America is no less than either Asia or Europe.
+ 
+
+For the sample input, the output is:
+ 
+
+| America | Asia | Europe |
+|---------|------|--------|
+| Jack    | Xi   | Pascal |
+| Jane    |      |        |
+
+
+
+Solution 1:
+
+# 1. Create a table to include student name from America and use window function row_number() to create row numbers for each student.
+# 2. Create a table to inlude student name from Asia and use window function row_number() to create row numbers for each student.
+# 3. Create a table to inlude student name from Europe and use window function row_number() to create row numbers for each student.
+# 4 .Join 3 tables on row numbers.
+
+MySQL statement:
+
+SELECT America, Asia, Europe
+  FROM 
+       (SELECT name AS America,
+               ROW_NUMBER() OVER () AS rn
+          FROM student
+         WHERE continent = 'America'
+        ORDER BY 1
+         ) t1
+LEFT JOIN 
+       (SELECT name AS Asia,
+               ROW_NUMBER() OVER () AS rn
+          FROM student
+         WHERE continent = 'Asia'
+        ORDER BY 1
+         ) t2
+    ON t1.rn = t2.rn
+LEFT JOIN 
+       (SELECT name AS Europe,
+               ROW_NUMBER() OVER () AS rn
+          FROM student
+         WHERE continent = 'Europe'
+        ORDER BY 1
+         ) t3
+    ON t1.rn = t3.rn
+
+
+Solution 2:
+# 1. use window function row_number() to create row numbers for each student by continent as a new temp table.
+# 2. Create 3 tables. Each table only include the student name from  each continent. Left join these 3 tables on row number.
+
+MySQL statement:
+
+WITH cte AS (
+             SELECT name,
+                    continent,
+                    ROW_NUMBER() OVER (PARTITION BY continent ORDER BY name) AS rn
+               FROM student)
+SELECT America, 
+       Asia,
+       Europe
+  FROM 
+       (SELECT name AS America,
+                rn
+          FROM cte
+         WHERE continent = 'America') t1
+  LEFT JOIN
+       (SELECT name AS Asia,
+                rn
+          FROM cte
+         WHERE continent = 'Asia') t2
+    ON t1.rn = t2.rn
+  LEFT JOIN
+       (SELECT name AS Europe,
+                rn
+          FROM cte
+         WHERE continent = 'Europe') t3
+    ON t1.rn = t3.rn 
+
