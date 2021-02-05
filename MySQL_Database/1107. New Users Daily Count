@@ -57,7 +57,7 @@ Solution:
 3. Use sub-query and filter out all the conditions as below. 
 4. Use WHERE clause to filter out the smallest date 
 5. Use GROUP BY + COUNT() statement to aggreate the activity_date and count user numbers
-6. Make sure using DISTINCT() to get the unique user_id. Otherwise, if there are users who did login activity multiple times on same day, and you will get an error.
+6. Make sure using DISTINCT() to get the unique user_id. Otherwise, if there are users who did login activity multiple times on same day, you will get an error.
 7. Use HAVING clause to filter out the date for most 90 days from today
 
 # MySQL Solution:
