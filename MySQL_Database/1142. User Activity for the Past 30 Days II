@@ -58,7 +58,7 @@ Algorithm:
 
 MySQL Solution:
 
-```
+
 SELECT COALESCE(ROUND(AVG(session_ct), 2), 0.00) AS average_sessions_per_user
   FROM (
          SELECT COUNT(DISTINCT session_id) AS session_ct
@@ -66,5 +66,5 @@ SELECT COALESCE(ROUND(AVG(session_ct), 2), 0.00) AS average_sessions_per_user
           WHERE activity_date BETWEEN DATE_SUB('2019-07-27', INTERVAL 29 DAY) AND '2019-07-27'
          GROUP BY user_id 
         ) t
-```        
+        
 
